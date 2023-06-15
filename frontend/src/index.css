@@ -1,0 +1,18 @@
+* {
+  margin: 0px;
+  padding: 0px;
+
+  box-sizing: content-box;
+
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+
+  --color-bg: #2f3542;
+
+  --box-radius: 5px;
+
+  --box-enter-anim: enterPlaying 1s ease-in-out;
+
+}

@@ -1,0 +1,204 @@
+.playing-now-container {
+
+    display: block;
+
+    width: calc(500px + (25px * 2) + (15px * 2));
+    height: calc(100px + (25px * 2) + (15px * 2));
+
+    overflow: hidden;
+
+    position: relative;
+
+}
+
+.playing-now-container .playing-now {
+
+    display: flex;
+
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+    background-color: var(--color-bg);
+    background-image: url('back-playing.png');
+    background-size: 20%;
+
+    width: 450px;
+    height: 80px;
+
+    padding: 15px;
+
+    border-radius: var(--box-radius);
+
+    margin: 25px;
+
+    animation: enterPlaying 1s ease-in-out forwards;
+
+}
+
+.playing-now-container::before {
+
+    content: "";
+    position: absolute;
+
+    inset: 0px;
+    transform: translate(10px, 8px); 
+    z-index: -1; 
+    scale: 0.999;
+    filter: blur(20px);
+
+    margin: 25px;
+
+    padding: 15px;
+
+    width: 450px;
+    height: 80px;
+
+    /* background: linear-gradient(#e66465, #9198e5); */
+
+    background: linear-gradient(180deg, rgba(255,0,0,1) 0%, rgba(255,255,255,1) 47%, rgba(0,0,0,1) 100%);
+
+    animation: enterPlaying 1s ease-in-out forwards;
+
+}
+
+.playing-now-container.hidden .playing-now,
+.playing-now-container.hidden::before {
+
+    top: 100%;
+    left: 15px;
+    opacity: 0;
+
+    animation: exittingPlaying 1s ease-in-out forwards;
+
+}
+
+.playing-now-container .playing-now .album-image {
+    width: 80px;
+    height: 80px;
+
+    position: relative;
+    margin-right: 50px;
+}
+
+.playing-now-container .playing-now .album-image img {
+
+    position: absolute;
+
+    width: 80px;
+    height: 80px;
+
+    background-color: #57606f;
+
+    object-fit:cover;
+
+    border: none;
+    outline: none;
+
+    border-radius: var(--box-radius);
+
+    z-index: 4;
+
+}
+
+.playing-now-container .playing-now .album-image::after {
+
+    content: " ";
+
+    display: block;
+
+    position: absolute;
+    left: 30px;
+    top: 0px;
+
+    width: 80px;
+    height: 80px;
+
+    background-position: center;
+    background-size: cover;
+    background-image: url('disco-de-vinilo.png');
+
+    z-index: 2;
+
+    animation: discRotate 1s linear infinite;
+
+}
+
+.playing-now-container .playing-now .playing-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
+
+    margin-left: 15px;
+
+}
+
+.playing-now-container .playing-now .playing-content .song-name {
+
+    font-size: 18pt;
+    font-weight: bold;
+
+    color: #ffffff;
+
+}
+
+.playing-now-container .playing-now .playing-content .song-author {
+    color: #ced6e0;
+    font-style: italic;
+}
+
+@keyframes discRotate {
+    from {
+
+        rotate: 0deg;
+
+    }
+
+    to {
+
+        rotate: 180deg;
+
+    }
+}
+
+@keyframes enterPlaying {
+    
+    from {
+
+        top: 100%;
+        left: -15px;
+        opacity: 0;
+
+    }
+
+    to {
+        opacity: 1;
+        top: 0%;
+        left: 0px;
+    }
+
+}
+
+@keyframes exittingPlaying {
+    
+    from {
+
+        opacity: 1;
+        top: 0%;
+        left: 0px;
+
+    }
+
+    to {
+        top: 100%;
+        left: 15px;
+        opacity: 0;
+    }
+
+}
