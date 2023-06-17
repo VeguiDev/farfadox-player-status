@@ -27,8 +27,6 @@ class AuthStore:
         if self.existsDataFolder() == False:
             os.mkdir(self.getFolderPath())
 
-        print("saving")
-
         try:
             data = self
 
@@ -39,10 +37,6 @@ class AuthStore:
             print("Error saving auth data:", ex)
 
     def refresh(self, data):
-        print("refreshing")
-
-        dkey = data.keys()
-
         if data != None:
             self.access_token = data["access_token"]
 

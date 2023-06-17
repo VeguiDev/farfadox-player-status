@@ -36,7 +36,7 @@ class AuthService:
         self.authData.load()
         if not self.authData.refresh_token == None:
             if self.tokenExpired():
-                if not self.tryRefreshAuthData():
+                if not await self.tryRefreshAuthData():
                     return False
 
             resp = await users.getCurrentUser(self.authData.access_token)
