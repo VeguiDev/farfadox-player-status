@@ -4,13 +4,22 @@ from ..api.oauth import requestAccessToken
 from ..config import token_scope
 
 from ..config import client_id
+from ..services import AuthService
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
+authService = AuthService()
+
 
 @router.get("/")
-def getAuthInfo():
-    return {"user": None}
+async def getAuthInfo():
+    if authService.isLoggedIn():
+        user = await authService.validateAuthData()
+
+        if not user == False:
+            return {"user": user, "logged": True}
+
+    return {"user": None, "logged": False}
 
 
 @router.get("/oauth")
@@ -31,8 +40,9 @@ async def getAccessToken(code: str | None, state: str, error: str | None = None)
     if error != None:
         return {"error": error}
 
-    resp = await requestAccessToken(code)
+    login = await authService.login(code)
 
-    print(resp.status)
+    if login == True:
+        return {"success": True, "message": "Successfully loggedin!"}
 
-    return resp.json()
+    return {"success": False, "message": "Error during login process!"}
