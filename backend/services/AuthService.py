@@ -19,7 +19,7 @@ class AuthService:
         resp = await oauth.requestAccessTokenByRefreshToken(self.authData.refresh_token)
 
         if resp.status == 200:
-            data = await resp.json()
+            data = resp.json()
 
             self.authData.refresh(data)
 
@@ -39,7 +39,24 @@ class AuthService:
             resp = await users.getCurrentUser(self.authData.access_token)
 
             if resp.status == 200:
-                return await resp.json()
+                return resp.json()
 
             self.authData.refresh(None)
             return False
+
+    def isLoggedIn(self):
+        auth = self.authData
+
+        return auth.access_token != None and auth.refresh_token != None
+
+    async def login(self, code: str):
+        resp = await oauth.requestAccessToken(code)
+
+        if resp.status == 200:
+            data = resp.json()
+            print(data)
+            self.authData.refresh(data)
+
+            return True
+
+        return False
