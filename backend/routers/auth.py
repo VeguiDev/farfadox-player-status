@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response, status
 from fastapi.responses import RedirectResponse
 from ..api.oauth import requestAccessToken
 from ..config import token_scope
@@ -32,12 +32,13 @@ def redirectToAuthorization():
         + "&scope="
         + scope
         + "&redirect_uri=http://localhost:8000/auth/response&state=state"
-    )
+    , 301)
 
 
-@router.get("/response")
-async def getAccessToken(code: str | None, state: str, error: str | None = None):
+@router.get("/response", status_code=200)
+async def getAccessToken(code: str | None, state: str, error: str | None = None, response:Response):
     if error != None:
+        response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": error}
 
     login = await authService.login(code)
@@ -45,4 +46,14 @@ async def getAccessToken(code: str | None, state: str, error: str | None = None)
     if login == True:
         return {"success": True, "message": "Successfully loggedin!"}
 
+    response.status_code = status.HTTP_400_BAD_REQUEST
     return {"success": False, "message": "Error during login process!"}
+
+
+@router.delete("/auth")
+async def logout():
+    if await authService.logout():
+        return {"success": True, "message": "Successfully logged out!"}
+    
+    response.status_code = status.HTTP_400_BAD_REQUEST
+    return {"success": False, "message": "You aren't logged in!"}
