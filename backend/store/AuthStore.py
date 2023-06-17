@@ -1,5 +1,6 @@
 import os
 import pickle
+import time
 
 
 class AuthStore:
@@ -30,6 +31,18 @@ class AuthStore:
                 pickle.dump(self, f, protocol=pickle.HIGHEST_PROTOCOL)
         except Exception as ex:
             print("Error saving auth data:", ex)
+
+    def refresh(self, data):
+        if not data == None:
+            self.access_token = data.access_token
+            self.refresh_token = data.refresh_token
+            self.expires_at = time.time() + data.expires_in
+        else:
+            self.access_token = None
+            self.refresh_token = None
+            self.expires_at = None
+
+        self.save()
 
     def loadFromRaw(self, raw):
         self.access_token = raw.access_token
