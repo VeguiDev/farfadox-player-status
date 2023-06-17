@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useMemo } from "react";
 import { RootState } from "../../store";
 
 const initialState: {

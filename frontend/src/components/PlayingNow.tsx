@@ -7,7 +7,7 @@ import {
 } from "../features/player/playerSlice";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "../hooks";
-import store, { RootState } from "../store";
+import { RootState } from "../store";
 
 export function PlayingNow() {
   const [loading, setLoading] = useState(true);
