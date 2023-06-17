@@ -101,6 +101,27 @@
 
 }
 
+.playing-now-container .playing-now .album-image .pause-stat {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    font-size: 20pt;
+
+    display: none;
+    color: #ffffff;
+    
+    width: 80px;
+    height: 100%;
+
+    z-index: 8;
+}
+
+.playing-now-container .playing-now.paused .album-image .pause-stat {
+    display: block;
+}
+
 .playing-now-container .playing-now .album-image::after {
 
     content: " ";
@@ -122,6 +143,10 @@
 
     animation: discRotate 1s linear infinite;
 
+}
+
+.playing-now-container .playing-now.paused .album-image::after {
+    animation: none;
 }
 
 .playing-now-container .playing-now .playing-content {

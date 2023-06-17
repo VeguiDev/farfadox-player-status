@@ -13,7 +13,7 @@ export function PlayingNow() {
   const [loading, setLoading] = useState(true);
   const [available, setAvailable] = useState(true);
 
-  const [hidden, setHidden] = useState(true);
+  const [hidden, setHidden] = useState(false);
   const [lastPlayer, setLastPlayer] = useState<RootState["player"] | null>(
     null
   );
@@ -22,10 +22,6 @@ export function PlayingNow() {
   const { setStatus } = usePlayerReducers();
 
   const dispatch = useAppDispatch();
-
-  const toggleVisibility = () => {
-    setHidden((state) => !state);
-  };
 
   const showAndHide = () => {
     setHidden(false);
@@ -118,9 +114,14 @@ export function PlayingNow() {
           css["playing-now-container"] + (hidden ? " " + css["hidden"] : "")
         }
       >
-        <div className={css["playing-now"]}>
+        <div
+          className={
+            css["playing-now"] + (player.isPaused ? " " + css["paused"] : "")
+          }
+        >
           <div className={css["album-image"]}>
             <img src={player.status.item.album.images[0].url} alt="" />
+            <i className={css["pause-stat"] + " fa-solid fa-pause"}></i>
           </div>
           <div className={css["playing-content"]}>
             <div className={css["song-name"]}>{songName}</div>
