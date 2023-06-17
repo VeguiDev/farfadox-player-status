@@ -82,6 +82,21 @@ export function PlayingNow() {
   if (loading || !available) {
     return <></>;
   }
+
+  const shortString = (text: string, max_length: number) => {
+    if (text.length < max_length) return text;
+
+    return text.slice(0, max_length) + "...";
+  };
+
+  let authors: any[] = player.status.item.artists;
+
+  let songName = shortString(player.status.item.name, 25),
+    songAuthors = shortString(
+      authors.map((artist) => artist.name).join(", "),
+      45
+    );
+
   return (
     <>
       <div
@@ -94,12 +109,8 @@ export function PlayingNow() {
             <img src={player.status.item.album.images[0].url} alt="" />
           </div>
           <div className={css["playing-content"]}>
-            <div className={css["song-name"]}>{player.status.item.name}</div>
-            <div className={css["song-author"]}>
-              {(player.status.item.artists as any[])
-                .map((artist) => artist.name)
-                .join(", ")}
-            </div>
+            <div className={css["song-name"]}>{songName}</div>
+            <div className={css["song-author"]}>{songAuthors}</div>
           </div>
         </div>
       </div>
