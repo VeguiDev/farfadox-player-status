@@ -4,14 +4,14 @@ import time
 
 
 class AuthStore:
+    filepath = os.path.join(os.getcwd(), "data", "auth.data")
+
     def __init__(
         self,
         access_token: str | None = None,
         expires_at: str | None = None,
         refresh_token: str | None = None,
     ):
-        self.filepath = os.path.join(os.getcwd(), "data", "auth.data")
-
         self.access_token = access_token
         self.expires_at = expires_at
         self.refresh_token = refresh_token

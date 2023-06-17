@@ -2,13 +2,19 @@ import { createSlice } from "@reduxjs/toolkit";
 import { useMemo } from "react";
 import { RootState } from "../../store";
 
+const initialState: {
+    isPlaying: boolean,
+    isPaused: boolean,
+    status: any|null
+} =  {
+    isPlaying: false,
+    isPaused: false,
+    status: null
+}
+
 export const playerSplice = createSlice({
     name: 'player',
-    initialState: {
-        isPlaying: false,
-        isPaused: false,
-        status: null
-    },
+    initialState:initialState,
     reducers: {
         clearStatus: (state) => {
             state.isPaused = false;
