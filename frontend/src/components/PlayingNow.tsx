@@ -89,7 +89,7 @@ export function PlayingNow() {
     return () => clearInterval(interval);
   }, [lastPlayer, hidden]);
 
-  if (loading || !available) {
+  if (loading || !available || player.status == null) {
     return <></>;
   }
 
