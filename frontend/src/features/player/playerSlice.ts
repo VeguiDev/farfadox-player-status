@@ -33,7 +33,7 @@ export const playerSplice = createSlice({
     }
 })
 
-export const usePlayerReducers = useMemo(() => playerSplice.actions, []);
+export const usePlayerReducers = () => playerSplice.actions;
 export const selectPlayer = (state: RootState) => state.player
 
 export default playerSplice.reducer;
