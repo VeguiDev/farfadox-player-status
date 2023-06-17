@@ -67,3 +67,12 @@ class AuthService:
             return True
 
         return False
+
+    async def getValidAccessToken(self):
+        if not self.tokenExpired():
+            return self.authData.access_token
+
+        if not await self.tryRefreshAuthData():
+            return None
+
+        return self.authData.access_token
