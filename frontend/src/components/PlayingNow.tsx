@@ -83,6 +83,16 @@ export function PlayingNow() {
     setLastPlayer(player);
   }, [player]);
 
+  useEffect(() => {
+    let interval = setInterval(() => {
+      if (!player.isPaused && player.isPlaying && hidden) {
+        showAndHide();
+      }
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [lastPlayer, hidden]);
+
   if (loading || !available) {
     return <></>;
   }
