@@ -38,7 +38,11 @@ export function PlayingNow() {
   const checkState = async () => {
     let playerStat = await UsersService.getCurrentPlayerStatus();
 
-    if (playerStat == "not_available" || !playerStat) {
+    if (
+      playerStat == "not_available" ||
+      !playerStat ||
+      playerStat.currently_playing_type == "ad"
+    ) {
       setAvailable(false);
       setLoading(false);
       return;
