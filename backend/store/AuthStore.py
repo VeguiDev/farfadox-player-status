@@ -1,11 +1,12 @@
 import os
 import pickle
 import time
+from . import JsonStore
+
+authFilePath = os.path.join(os.getcwd(), "data", "auth.data")
 
 
 class AuthStore:
-    filepath = os.path.join(os.getcwd(), "data", "auth.data")
-
     def __init__(
         self,
         access_token: str | None = None,
@@ -20,26 +21,34 @@ class AuthStore:
         return os.path.exists(self.getFolderPath())
 
     def getFolderPath(self):
-        return os.path.dirname(self.filepath)
+        return os.path.dirname(authFilePath)
 
     def save(self):
         if self.existsDataFolder() == False:
             os.mkdir(self.getFolderPath())
 
+        print("saving")
+
         try:
-            with open(self.filepath, "wb") as f:
-                data = self
+            data = self
 
-                del data.filepath
+            print(data)
 
-                pickle.dump(data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            JsonStore.saveFile(data.__dict__, authFilePath)
         except Exception as ex:
             print("Error saving auth data:", ex)
 
     def refresh(self, data):
-        if not data == None:
+        print("refreshing")
+
+        dkey = data.keys()
+
+        if data != None:
             self.access_token = data["access_token"]
-            self.refresh_token = data["refresh_token"]
+
+            if data["refresh_token"] != None:
+                self.refresh_token = data["refresh_token"]
+
             self.expires_at = time.time() + data["expires_in"]
         else:
             self.access_token = None
@@ -49,19 +58,24 @@ class AuthStore:
         self.save()
 
     def loadFromRaw(self, raw):
-        self.access_token = raw.access_token
-        self.refresh_token = raw.refresh_token
-        self.expires_at = raw.expires_at
+        if raw == None:
+            return
+
+        self.access_token = raw["access_token"]
+        self.refresh_token = raw["refresh_token"]
+        self.expires_at = raw["expires_at"]
 
     def load(self):
         if self.existsDataFolder() == False:
             os.mkdir(self.getFolderPath())
 
-        if not os.path.exists(self.filepath):
+        if not os.path.exists(authFilePath):
             self.save()
         else:
             try:
-                with open(self.filepath, "rb") as f:
-                    self.loadFromRaw(pickle.load(f))
+                raw = JsonStore.loadFile(authFilePath)
+
+                if not raw == None:
+                    self.loadFromRaw(raw)
             except Exception as ex:
                 print("Error during unpickling object (Possibly unsupported):", ex)
