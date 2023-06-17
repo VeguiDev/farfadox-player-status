@@ -1,21 +1,22 @@
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response, status, APIRouter
+from fastapi.middleware.cors import CORSMiddleware
 from .routers import auth
 from .services import AuthService
 from .api import users
 
-app = FastAPI()
+router = APIRouter(prefix="/api")
 
-app.include_router(auth.router)
+router.include_router(auth.router)
 
 authService = AuthService()
 
 
-@app.get("/")
+@router.get("/")
 def index():
     return "hello world"
 
 
-@app.get("/status", status_code=200)
+@router.get("/status", status_code=200)
 async def getCurrentStatus(response: Response):
     accessToken = await authService.getValidAccessToken()
 
@@ -35,3 +36,17 @@ async def getCurrentStatus(response: Response):
         "error": "error_obtaining_player_status",
         "message": "Exception occurred when try to obtain player status!",
     }
+
+
+app = FastAPI()
+
+origins = ["http://localhost:8000", "http://localhost:5173"]
+
+app.include_router(router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
