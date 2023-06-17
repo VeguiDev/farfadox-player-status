@@ -60,3 +60,10 @@ class AuthService:
             return True
 
         return False
+
+    async def logout(self):
+        if self.isLoggedIn():
+            self.auth.refresh(null)
+            return True
+
+        return False
