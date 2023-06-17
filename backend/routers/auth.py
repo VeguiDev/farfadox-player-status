@@ -31,12 +31,15 @@ def redirectToAuthorization():
         + client_id
         + "&scope="
         + scope
-        + "&redirect_uri=http://localhost:8000/auth/response&state=state"
-    , 301)
+        + "&redirect_uri=http://localhost:8000/auth/response&state=state",
+        301,
+    )
 
 
 @router.get("/response", status_code=200)
-async def getAccessToken(code: str | None, state: str, error: str | None = None, response:Response):
+async def getAccessToken(
+    state: str, response: Response, code: str | None = None, error: str | None = None
+):
     if error != None:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error": error}
@@ -51,9 +54,9 @@ async def getAccessToken(code: str | None, state: str, error: str | None = None,
 
 
 @router.delete("/auth")
-async def logout():
+async def logout(response: Response):
     if await authService.logout():
         return {"success": True, "message": "Successfully logged out!"}
-    
+
     response.status_code = status.HTTP_400_BAD_REQUEST
     return {"success": False, "message": "You aren't logged in!"}
