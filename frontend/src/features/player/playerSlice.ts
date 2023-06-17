@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { useMemo } from "react";
+import { RootState } from "../../store";
 
 export const playerSplice = createSlice({
     name: 'player',
@@ -33,5 +34,6 @@ export const playerSplice = createSlice({
 })
 
 export const usePlayerReducers = useMemo(() => playerSplice.actions, []);
+export const selectPlayer = (state: RootState) => state.player
 
 export default playerSplice.reducer;
