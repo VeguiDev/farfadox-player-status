@@ -11,7 +11,7 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 authService = AuthService()
 
 
-@router.get("/")
+@router.get("")
 async def getAuthInfo():
     if authService.isLoggedIn():
         user = await authService.validateAuthData()
@@ -31,7 +31,7 @@ def redirectToAuthorization():
         + client_id
         + "&scope="
         + scope
-        + "&redirect_uri=http://localhost:8000/auth/response&state=state",
+        + "&redirect_uri=http://localhost:8000/api/auth/response&state=state",
         301,
     )
 
@@ -47,10 +47,12 @@ async def getAccessToken(
     login = await authService.login(code)
 
     if login == True:
-        return {"success": True, "message": "Successfully loggedin!"}
+        # return {"success": True, "message": "Successfully loggedin!"}
+        return RedirectResponse("http://localhost:8000/success/login")
 
-    response.status_code = status.HTTP_400_BAD_REQUEST
-    return {"success": False, "message": "Error during login process!"}
+    # response.status_code = status.HTTP_400_BAD_REQUEST
+    return RedirectResponse("http://localhost:8000/failed/login")
+    # return {"success": False, "message": "Error during login process!"}
 
 
 @router.delete("/auth")

@@ -2,6 +2,7 @@ import os
 import pickle
 import time
 from . import JsonStore
+from ..utils import object
 
 authFilePath = os.path.join(os.getcwd(), "data", "auth.data")
 
@@ -40,7 +41,7 @@ class AuthStore:
         if data != None:
             self.access_token = data["access_token"]
 
-            if data["refresh_token"] != None:
+            if object.keyExists("refresh_token", data):
                 self.refresh_token = data["refresh_token"]
 
             self.expires_at = time.time() + data["expires_in"]

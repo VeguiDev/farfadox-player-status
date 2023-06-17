@@ -1,22 +1,32 @@
 from fastapi import FastAPI, Response, status, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from .routers import auth
 from .services import AuthService
 from .api import users
-
-router = APIRouter(prefix="/api")
-
-router.include_router(auth.router)
+from os import path
 
 authService = AuthService()
 
 
-@router.get("/")
-def index():
-    return "hello world"
+app = FastAPI()
+
+origins = ["http://localhost:8000", "http://localhost:5173"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+dirname = path.dirname(path.realpath(__file__))
+staticDir = path.join(dirname, "..", "frontend", "dist")
 
 
-@router.get("/status", status_code=200)
+@app.get("/api/status", status_code=200)
 async def getCurrentStatus(response: Response):
     accessToken = await authService.getValidAccessToken()
 
@@ -38,15 +48,11 @@ async def getCurrentStatus(response: Response):
     }
 
 
-app = FastAPI()
+app.include_router(auth.router, prefix="/api")
 
-origins = ["http://localhost:8000", "http://localhost:5173"]
+app.mount("/", StaticFiles(directory=staticDir))
 
-app.include_router(router)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+@app.exception_handler(404)
+async def not_found(request, ex):
+    return FileResponse(path.join(staticDir, "index.html"))
