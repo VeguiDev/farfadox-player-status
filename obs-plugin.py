@@ -16,8 +16,8 @@ class Controller:
         settings = S.obs_data_create()
 
         S.obs_data_set_string(settings, "url", "http://localhost:8000")
-        S.obs_data_set_int(settings, "width", 580)
-        S.obs_data_set_int(settings, "height", 180)
+        S.obs_data_set_int(settings, "width", 590)
+        S.obs_data_set_int(settings, "height", 190)
 
         source = S.obs_source_create_private("browser_source", "test_py", settings)
 
