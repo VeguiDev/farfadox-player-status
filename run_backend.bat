@@ -10,6 +10,6 @@ cd ..
 
 call ./backend/env/Scripts/activate.bat
 
-pip install -r requirements.txt
+pip install -r ./backend/requirements.txt
 
 uvicorn backend.main:app
