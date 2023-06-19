@@ -44,6 +44,17 @@ export function PlayingNow() {
       return;
     }
 
+    if (playerStat.status == "not_playing") {
+      dispatch(setStatus(playerStat));
+      setLoading(false);
+
+      if (!hidden) {
+        setHidden(false);
+      }
+
+      return;
+    }
+
     dispatch(setStatus(playerStat));
     setLoading(false);
 
@@ -61,6 +72,11 @@ export function PlayingNow() {
 
   useEffect(() => {
     if (loading || !available) return;
+
+    if (!player.status) {
+      setLastPlayer(null);
+      return;
+    }
 
     if (!lastPlayer && player.status) {
       showAndHide();
