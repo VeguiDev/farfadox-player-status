@@ -7,7 +7,7 @@
 
     overflow: hidden;
 
-    position: relative;
+    padding: 10px;
 
 }
 
@@ -15,13 +15,7 @@
 
     display: flex;
 
-    position: absolute;
-    left: 0px;
-    top: 0px;
-
-    background-color: var(--color-bg);
-    background-image: url('back-playing.png');
-    background-size: 20%;
+    position: relative;
 
     width: 450px;
     height: 80px;
@@ -33,37 +27,53 @@
     margin: 25px;
 
     animation: enterPlaying 1s ease-in-out forwards;
+    z-index: 1000;
 
 }
 
-.playing-now-container::before {
+.playing-now-container .playing-now::after {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: var(--box-radius);
+    background-color: var(--color-bg);
+    background-image: url('back-playing.png');
+    background-size: 20%;
+
+    z-index: -1;
+}
+
+.playing-now-container .playing-now::before {
 
     content: "";
     position: absolute;
 
     inset: 0px;
     transform: translate(10px, 8px); 
-    z-index: -1; 
     scale: 0.999;
     filter: blur(20px);
-
-    margin: 25px;
 
     padding: 15px;
 
     width: 450px;
     height: 80px;
 
-    /* background: linear-gradient(#e66465, #9198e5); */
-
     background: linear-gradient(180deg, rgba(255,0,0,1) 0%, rgba(255,255,255,1) 47%, rgba(0,0,0,1) 100%);
 
     animation: enterPlaying 1s ease-in-out forwards;
 
+    z-index: -4;
+
 }
 
 .playing-now-container.hidden .playing-now,
-.playing-now-container.hidden::before {
+.playing-now-container.hidden .playing-now::before {
 
     top: 100%;
     left: 15px;
@@ -181,13 +191,13 @@
 @keyframes discRotate {
     from {
 
-        rotate: 0deg;
+        transform: rotate(0deg);
 
     }
 
     to {
 
-        rotate: 180deg;
+        transform: rotate(180deg);
 
     }
 }
