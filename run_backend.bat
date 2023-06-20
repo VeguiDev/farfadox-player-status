@@ -10,6 +10,6 @@ cd ..
 
 call ./backend/env/Scripts/activate.bat
 
-pip install -r ./backend/requirements.txt
+call pip install -r ./backend/requirements.txt
 
-uvicorn backend.main:app
+call hypercorn backend.main:app --bind localhost:8000
