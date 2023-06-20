@@ -3,10 +3,25 @@ import threading
 import os
 import obspython as S
 import webbrowser
+import json
+import queue
+import time
+
+message_queue = queue.Queue()
 
 process = []
 path = ""
 thread = None
+props = None
+
+status = {
+    "isLogged": False,
+    "ready": False,
+    "controllers": {"link_spotify": False, "add_to_scene": False},
+}
+
+add_button = None
+link_spotify_button = None
 
 
 class Controller:
@@ -28,15 +43,99 @@ class Controller:
         S.obs_source_release(source)
 
 
-def busy_thread(path):
-    pro = subprocess.Popen([path + "run_backend.bat"], cwd=path, shell=True)
+def refershAllBrowsers():
+    print("refresh")
+    sources = S.obs_enum_sources()
 
+    if not sources == None:
+        for source in sources:
+            source_id = obspython.obs_source_get_unversioned_id(source)
+            if source_id == "browser_source":
+                print("refreshing")
+                properties = S.obs_source_properties(source)
+                property = S.obs_properties_get(properties, "refreshnocache")
+                S.obs_property_button_clicked(property, source)
+                S.obs_properties_destroy(properties)
+        S.source_list_release(sources)
+
+
+def setIsLogged(isLogged):
+    global status
+
+    status["isLogged"] = isLogged
+
+    if isLogged:
+        status["controllers"]["link_spotify"] = False
+        status["controllers"]["add_to_scene"] = True
+    else:
+        status["controllers"]["link_spotify"] = True
+        status["controllers"]["add_to_scene"] = False
+
+
+def process_message(message):
+    msgKeys = message.keys()
+
+    if "type" in msgKeys:
+        type = message["type"]
+
+        if type == "READY":
+            print("Backend ready!")
+            # setIsLogged(message["type"]["data"]["isLogged"])
+            refershAllBrowsers()
+        elif type == "SUCCESS_LOGIN":
+            # setIsLogged(True)
+            refershAllBrowsers()
+
+
+def process_line(line: str):
+    if line.startswith("[[MSG_LINE]]"):
+        lineparts = line.split(":")
+
+        if not len(lineparts) > 1:
+            return
+
+        del lineparts[0]
+
+        rawMsg = ":".join(lineparts)
+
+        try:
+            msg = json.loads(rawMsg)
+
+            message_queue.put(msg)
+
+        except Exception as ex:
+            print("Can't parse backend message", ex)
+            print(line)
+
+    else:
+        print(line)
+
+
+def busy_thread(path):
+    global process
+
+    pro = subprocess.Popen(
+        [path + "run_backend.bat"],
+        cwd=path,
+        stdout=subprocess.PIPE,
+        shell=True,
+        universal_newlines=True,
+    )
     process.append(pro)
+
+    for line in pro.stdout:
+        process_line(line.strip())
 
     pro.wait()
 
 
 conf = Controller()
+
+
+def handle_message():
+    if not message_queue.empty():
+        message = message_queue.get()
+        process_message(message)
 
 
 def script_load(conf):
@@ -51,13 +150,18 @@ def script_load(conf):
         thread = threading.Thread(target=busy_thread, args=(path,))
         thread.start()
 
+    S.timer_add(handle_message, 250)
+
 
 def script_unload():
+    global process
     print("Plugin unloaded")
 
     for p in process:
         print("KILLING")
+        print(str(p.pid))
         subprocess.run(["taskkill", "/F", "/T", "/PID", str(p.pid)])
+    thread.join()
 
 
 def add_pressed(props, prop):
@@ -73,11 +177,18 @@ def script_description():
 
 
 def script_properties():
+    global add_button
+    global link_spotify_button
+    global props
+
     props = S.obs_properties_create()
-    S.obs_properties_add_button(
+
+    add_button = S.obs_properties_add_button(
         props, "add_to_scene", "Añadir a la escena", add_pressed
     )
-    S.obs_properties_add_button(
+
+    link_spotify_button = S.obs_properties_add_button(
         props, "link_spotify", "Vincular Spotify", open_spotify_pressed
     )
+
     return props

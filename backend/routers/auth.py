@@ -5,6 +5,7 @@ from ..config import token_scope
 
 from ..config import client_id
 from ..services import AuthService
+from ..utils import msg
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
@@ -48,6 +49,7 @@ async def getAccessToken(
 
     if login == True:
         # return {"success": True, "message": "Successfully loggedin!"}
+        msg.sendMessageToOBS({"type": "SUCCESS_LOGIN"})
         return RedirectResponse("http://localhost:8000/success/login")
 
     # response.status_code = status.HTTP_400_BAD_REQUEST

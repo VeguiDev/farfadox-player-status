@@ -6,6 +6,7 @@ from .routers import auth
 from .services import AuthService
 from .api import users
 from os import path
+from .utils import msg
 
 authService = AuthService()
 
@@ -56,3 +57,10 @@ app.mount("/", StaticFiles(directory=staticDir))
 @app.exception_handler(404)
 async def not_found(request, ex):
     return FileResponse(path.join(staticDir, "index.html"))
+
+
+@app.on_event("startup")
+async def startup_event():
+    msg.sendMessageToOBS(
+        {"type": "READY", "data": {"isLogged": authService.isLoggedIn()}}
+    )
