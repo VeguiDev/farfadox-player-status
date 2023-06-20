@@ -42,8 +42,8 @@
     height: 100%;
 
     border-radius: var(--box-radius);
-    background-color: var(--color-bg);
-    background-image: url('back-playing.png');
+    /* background-color: var(--color-bg); */
+    /* background-image: url('back-playing.png'); */
     background-size: 20%;
 
     z-index: -1;
@@ -64,7 +64,7 @@
     width: 450px;
     height: 80px;
 
-    background: linear-gradient(180deg, rgba(255,0,0,1) 0%, rgba(255,255,255,1) 47%, rgba(0,0,0,1) 100%);
+    /* background: linear-gradient(180deg, rgba(255,0,0,1) 0%, rgba(255,255,255,1) 47%, rgba(0,0,0,1) 100%); */
 
     animation: enterPlaying 1s ease-in-out forwards;
 
@@ -145,9 +145,9 @@
     width: 80px;
     height: 80px;
 
-    background-position: center;
-    background-size: cover;
-    background-image: url('/disco-de-vinilo.png');
+    /* background-position: center; */
+    /* background-size: cover; */
+    /* background-image: url('/disco-de-vinilo.png'); */
 
     z-index: 2;
 
@@ -170,15 +170,16 @@
     width: 100%;
     height: 100%;
 
-    margin-left: 15px;
+    /* margin-left: 15px; */
 
 }
 
 .playing-now-container .playing-now .playing-content .song-name {
 
     font-size: 18pt;
-    font-weight: bold;
+    /* font-weight: bold; */
 
+    text-shadow: 0px 0px 10px rgba(0,0,0,0.5);
     color: #ffffff;
 
 }
@@ -186,6 +187,7 @@
 .playing-now-container .playing-now .playing-content .song-author {
     color: #ced6e0;
     font-style: italic;
+    text-shadow: 0px 0px 10px rgba(0,0,0,0.5);
 }
 
 @keyframes discRotate {
