@@ -7,12 +7,12 @@ import json
 import queue
 import time
 
-message_queue = queue.Queue()
-
 process = []
 path = ""
 thread = None
 props = None
+
+message_queue = queue.Queue()
 
 status = {
     "isLogged": False,
