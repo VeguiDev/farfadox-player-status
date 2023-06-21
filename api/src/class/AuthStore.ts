@@ -1,7 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
+import os from "os";
 
-const authFilePath = path.join(process.cwd(), 'data', 'auth.data');
+const authFilePath = path.join(os.homedir(), "data", "auth.data");
 
 export default class AuthStore {
   access_token: string | null;
@@ -11,7 +12,7 @@ export default class AuthStore {
   constructor(
     access_token: string | null = null,
     expires_at: number | null = null,
-    refresh_token: string | null = null,
+    refresh_token: string | null = null
   ) {
     this.access_token = access_token;
     this.expires_at = expires_at;
@@ -29,7 +30,7 @@ export default class AuthStore {
   save(): void {
     if (!this.existsDataFolder()) {
       fs.mkdirSync(this.getFolderPath(), {
-        recursive: true
+        recursive: true,
       });
     }
 
@@ -42,7 +43,7 @@ export default class AuthStore {
 
       fs.writeFileSync(authFilePath, JSON.stringify(data));
     } catch (ex) {
-      console.error('Error saving auth data:', ex);
+      console.error("Error saving auth data:", ex);
     }
   }
 
@@ -50,7 +51,7 @@ export default class AuthStore {
     if (data !== null) {
       this.access_token = data.access_token;
 
-      if ('refresh_token' in data) {
+      if ("refresh_token" in data) {
         this.refresh_token = data.refresh_token;
       }
 
@@ -76,9 +77,8 @@ export default class AuthStore {
 
   load(): void {
     if (!this.existsDataFolder()) {
-      fs.mkdirSync(this.getFolderPath(),
-      {
-        recursive: true
+      fs.mkdirSync(this.getFolderPath(), {
+        recursive: true,
       });
     }
 
@@ -86,14 +86,14 @@ export default class AuthStore {
       this.save();
     } else {
       try {
-        const raw = fs.readFileSync(authFilePath, 'utf8');
+        const raw = fs.readFileSync(authFilePath, "utf8");
 
-        if (raw !== '') {
+        if (raw !== "") {
           const data = JSON.parse(raw);
           this.loadFromRaw(data);
         }
       } catch (ex) {
-        console.error('Error during reading auth data:', ex);
+        console.error("Error during reading auth data:", ex);
       }
     }
   }

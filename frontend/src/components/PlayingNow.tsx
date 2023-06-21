@@ -17,6 +17,13 @@ export function PlayingNow() {
   const [lastPlayer, setLastPlayer] = useState<RootState["player"] | null>(
     null
   );
+  const [timerTime, setTimerTime] = useState({
+    total_time: 0,
+    current_time: 0,
+    percent: 0,
+    cutter_percent: 100,
+  });
+
   const player = useSelector(selectPlayer);
 
   const { setStatus } = usePlayerReducers();
@@ -25,7 +32,6 @@ export function PlayingNow() {
 
   const showAndHide = () => {
     setHidden(false);
-
     setTimeout(() => {
       setHidden(true);
     }, 10000);
@@ -55,6 +61,26 @@ export function PlayingNow() {
       return;
     }
 
+    if (
+      (!hidden && playerStat.is_playing) ||
+      (!!playerStat.item && !!playerStat.progress_ms)
+    ) {
+      let totalTime = playerStat.item.duration_ms,
+        currentTime = playerStat.progress_ms;
+
+      let percent = (currentTime / totalTime) * 100;
+
+      let cutter_percent = 100 - percent;
+
+      setTimerTime({
+        current_time: currentTime,
+        cutter_percent: cutter_percent,
+        percent: percent,
+        total_time: totalTime,
+      });
+    }
+
+    setAvailable(true);
     dispatch(setStatus(playerStat));
     setLoading(false);
 
@@ -115,7 +141,7 @@ export function PlayingNow() {
     return text.slice(0, max_length) + "...";
   };
 
-  let authors: any[] = player.status.item.artists;
+  let authors: any[] = player.status.item.artists || [];
 
   let songName = shortString(player.status.item.name, 25),
     songAuthors = shortString(
@@ -142,6 +168,14 @@ export function PlayingNow() {
           <div className={css["playing-content"]}>
             <div className={css["song-name"]}>{songName}</div>
             <div className={css["song-author"]}>{songAuthors}</div>
+            <div className={css["song-progress-cont"]}>
+              <div
+                className={css["song-progress"]}
+                style={{
+                  width: timerTime.percent + "%",
+                }}
+              ></div>
+            </div>
           </div>
         </div>
       </div>

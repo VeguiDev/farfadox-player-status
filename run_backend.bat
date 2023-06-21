@@ -6,10 +6,10 @@ call npm install
 
 call npm run build
 
-cd ..
+cd ../api
 
-call ./backend/env/Scripts/activate.bat
+call npm install
 
-call pip install -r ./backend/requirements.txt
+call npm run build
 
-call hypercorn backend.main:app --bind localhost:8000
+call npm start
