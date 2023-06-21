@@ -19,10 +19,7 @@ export class AuthService {
 
   private tokenExpired(): boolean {
     this.authData.load();
-    if (
-      this.authData.access_token !== undefined &&
-      this.authData.expires_at !== undefined
-    ) {
+    if (this.authData.access_token && this.authData.expires_at) {
       return Date.now() > this.authData.expires_at;
     }
     return false;

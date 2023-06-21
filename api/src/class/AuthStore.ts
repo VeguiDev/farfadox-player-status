@@ -51,7 +51,7 @@ export default class AuthStore {
     if (data !== null) {
       this.access_token = data.access_token;
 
-      if ("refresh_token" in data) {
+      if (data.refresh_token) {
         this.refresh_token = data.refresh_token;
       }
 
