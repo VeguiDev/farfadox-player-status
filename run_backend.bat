@@ -7,6 +7,7 @@ IF %ERRORLEVEL% == 0 goto run_server
 IF %ERRORLEVEL% == 2 goto update_runner
 exit
 
+
 :run_server
 
 echo [WRAPPER] * Preparing to run server
